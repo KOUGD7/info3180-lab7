@@ -33,7 +33,7 @@ def upload():
             #rootdir = os.getcwd()
             photo.save(os.path.join(filefolder,filename))
 
-            info = [{'message': 'File Upload Successful', 'filename': filename, 'description': description}]
+            info = {'message': 'File Upload Successful', 'filename': filename, 'description': description}
             return  jsonify(info=info)
             #return jsonify(upload=info)
         error = form_errors(myform)

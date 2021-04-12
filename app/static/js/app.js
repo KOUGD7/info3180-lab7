@@ -51,6 +51,21 @@ const UploadForm = {
     name: 'upload-form',
     template: `
     <h2>Upload Form</h2>
+    <div v-if="message[0] == 'good'">
+        <div class="alert alert-success" role="alert">
+            <ul v-for="m in message[1]" > 
+                <li>{{ m }}</li>
+            </ul>
+        </div>
+    </div>
+    <div v-else>
+        <div class="alert alert-warning" role="alert">
+            <ul v-for="m in message[1]"> 
+                <p>{{ m }}</p>
+            </ul>
+        </div>
+    </div>
+    
     <form @submit.prevent="uploadPhoto" id="uploadForm" method="post">
         <div class= "form-group">
             <label>Description</label>
@@ -65,11 +80,12 @@ const UploadForm = {
     `,
     data() {
         return {
-            year: (new Date).getFullYear()
+            message: []
         }
     },
     methods: {
         uploadPhoto(){
+            let self = this;
             let uploadForm = document.getElementById('uploadForm');
             let form_data = new FormData(uploadForm);
 
@@ -87,6 +103,13 @@ const UploadForm = {
                 .then(function (jsonResponse) {
                 // display a success message
                 console.log(jsonResponse);
+                if(jsonResponse.error){
+                    self.message = ['bad', jsonResponse.error]
+                }
+                else{
+                    self.message = ['good',[jsonResponse.info.message]]
+                }
+                
                 })
                 .catch(function (error) {
                 console.log(error);
