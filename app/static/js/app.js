@@ -58,7 +58,7 @@ const UploadForm = {
             </ul>
         </div>
     </div>
-    <div v-else>
+    <div v-if="message[0] == 'bad'">
         <div class="alert alert-warning" role="alert">
             <ul v-for="m in message[1]"> 
                 <p>{{ m }}</p>
