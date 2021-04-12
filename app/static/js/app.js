@@ -22,6 +22,9 @@ app.component('app-header', {
           <li class="nav-item active">
             <router-link class="nav-link" to="/">Home <span class="sr-only">(current)</span></router-link>
           </li>
+          <li class="nav-item active">
+            <router-link class="nav-link" to="/upload">Upload <span class="sr-only">(current)</span></router-link>
+          </li>
         </ul>
       </div>
     </nav>
@@ -43,6 +46,55 @@ app.component('app-footer', {
         }
     }
 });
+
+const UploadForm = {
+    name: 'upload-form',
+    template: `
+    <h2>Upload Form</h2>
+    <form @submit.prevent="uploadPhoto" id="uploadForm" method="post">
+        <div class= "form-group">
+            <label>Description</label>
+            <textarea class ="form-control" name="description" placeholder="Description"></textarea>
+        </div>
+        <div class = "form-group">
+            <label>Photo Upload</label>
+            <input class ="form-control" type="file" name="photo">
+        </div>
+        <button type="submit" name="submit" class="btn btn-primary">Upload</button>
+    </form>
+    `,
+    data() {
+        return {
+            year: (new Date).getFullYear()
+        }
+    },
+    methods: {
+        uploadPhoto(){
+            let uploadForm = document.getElementById('uploadForm');
+            let form_data = new FormData(uploadForm);
+
+            fetch("/api/upload", {
+                method: 'POST',
+                body: form_data,
+                headers: {
+                    'X-CSRFToken': token
+                    },
+                    credentials: 'same-origin'
+                })
+                .then(function (response) {
+                return response.json();
+                })
+                .then(function (jsonResponse) {
+                // display a success message
+                console.log(jsonResponse);
+                })
+                .catch(function (error) {
+                console.log(error);
+                });
+        }
+    }
+};
+
 
 const Home = {
     name: 'Home',
@@ -73,7 +125,7 @@ const NotFound = {
 const routes = [
     { path: "/", component: Home },
     // Put other routes here
-
+    { path: '/upload', component: UploadForm },
     // This is a catch all route in case none of the above matches
     { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFound }
 ];
